@@ -1,0 +1,210 @@
+{% extends 'base.html' %}
+
+{% block title %}Обо мне{% endblock %}
+
+{% block content %}
+<div class="container py-2">
+    {% if portfolio %}
+        <!-- Заголовок и кнопка скачать резюме -->
+        <div class="mb-4">
+            <div class="row align-items-center">
+                <div class="col">
+                    <h1 class="mb-2">{{ portfolio.full_name }}</h1>
+                    <h3 class="text-muted">{{ portfolio.position }}</h3>
+                </div>
+                {% if portfolio.resume_pdf %}
+                    <div class="col-auto">
+                        <a href="{{ portfolio.resume_pdf.url }}" class="btn btn-primary" target="_blank">
+                            <i class="bi bi-file-pdf me-2"></i>Скачать резюме
+                        </a>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="row">
+            <!-- Левая колонка с фото и контактами -->
+            <div class="col-md-4 mb-4">
+                {% if portfolio.photo %}
+                    <img src="{{ portfolio.photo.url }}" alt="Моё фото" class="img-fluid rounded mb-4 shadow">
+                {% endif %}
+                
+                <div class="card shadow-sm mb-4">
+                    <div class="card-body">
+                        <h5 class="card-title border-bottom pb-2">Контакты</h5>
+                        <ul class="list-unstyled">
+                            <li class="mb-2">
+                                <i class="bi bi-envelope-fill me-2"></i>
+                                <a href="mailto:{{ portfolio.email }}">{{ portfolio.email }}</a>
+                            </li>
+                            {% if portfolio.telegram %}
+                                <li class="mb-2">
+                                    <i class="bi bi-telegram me-2"></i>
+                                    <a href="https://t.me/{{ portfolio.telegram }}">{{ portfolio.telegram }}</a>
+                                </li>
+                            {% endif %}
+                            {% if portfolio.github %}
+                                <li class="mb-2">
+                                    <i class="bi bi-github me-2"></i>
+                                    <a href="{{ portfolio.github }}" target="_blank">GitHub</a>
+                                </li>
+                            {% endif %}
+                            {% if portfolio.linkedin %}
+                                <li class="mb-2">
+                                    <i class="bi bi-linkedin me-2"></i>
+                                    <a href="{{ portfolio.linkedin }}" target="_blank">LinkedIn</a>
+                                </li>
+                            {% endif %}
+                        </ul>
+                    </div>
+                </div>
+
+                {% if portfolio.resume_pdf %}
+                    <div class="d-grid mt-3">
+                        <a href="{{ portfolio.resume_pdf.url }}" class="btn btn-primary" target="_blank">
+                            <i class="bi bi-file-pdf me-2"></i>Открыть резюме
+                        </a>
+                    </div>
+                {% endif %}
+            </div>
+
+            <!-- Правая колонка с основной информацией -->
+            <div class="col-md-8">
+                <!-- О себе -->
+                <div class="card shadow-sm mb-4">
+                    <div class="card-body">
+                        <h3 class="card-title border-bottom pb-2">{{ portfolio.bio_title }}</h3>
+                        <div class="card-text content-block">
+                            {{ portfolio.bio_content|safe }}
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Навыки -->
+                <div class="card shadow-sm">
+                    <div class="card-body">
+                        <h3 class="card-title border-bottom pb-2">Навыки и технологии</h3>
+                        <div class="skills-content">
+                            {{ portfolio.skills|safe }}
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Опыт работы -->
+                {% if experience %}
+                    <div class="card shadow-sm mt-4">
+                        <div class="card-body">
+                            <h3 class="card-title border-bottom pb-2">Опыт работы</h3>
+                            <div class="timeline">
+                                {% for job in experience %}
+                                    <div class="card mb-3">
+                                        <div class="card-body">
+                                            <h4 class="card-title">{{ job.position }} <small class="text-muted">в {{ job.company }}</small></h4>
+                                            <p class="card-subtitle text-muted mb-3">
+                                                {{ job.start_date|date:"M Y" }} - 
+                                                {% if job.is_current %}
+                                                    настоящее время
+                                                {% else %}
+                                                    {{ job.end_date|date:"M Y" }}
+                                                {% endif %}
+                                            </p>
+                                            <div class="content-block">
+                                                {{ job.description|safe }}
+                                            </div>
+                                            {% if job.technologies %}
+                                                <div class="technologies">
+                                                    <strong>Технологии:</strong> {{ job.technologies }}
+                                                </div>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                {% endif %}
+
+                <!-- Образование -->
+                {% if education %}
+                    <div class="card shadow-sm mt-4">
+                        <div class="card-body">
+                            <h3 class="card-title border-bottom pb-2">Образование</h3>
+                            <div class="timeline">
+                                {% for edu in education %}
+                                    <div class="card mb-3">
+                                        <div class="card-body">
+                                            <h5 class="card-title">{{ edu.degree }}</h5>
+                                            <h6 class="card-subtitle mb-2 text-muted">
+                                                {{ edu.institution }}
+                                                {% if edu.is_current %}
+                                                    <span class="badge bg-success ms-2">Текущее обучение</span>
+                                                {% endif %}
+                                            </h6>
+                                            <p class="card-text">
+                                                <small class="text-muted">
+                                                    {{ edu.start_date|date:"m.Y" }} - 
+                                                    {% if edu.is_current %}
+                                                        настоящее время
+                                                    {% else %}
+                                                        {{ edu.end_date|date:"m.Y" }}
+                                                    {% endif %}
+                                                </small>
+                                            </p>
+                                            {% if edu.description %}
+                                                <p class="card-text">{{ edu.description|linebreaks }}</p>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                {% endif %}
+
+                <!-- Сертификаты -->
+                {% if certificates %}
+                    <div class="card shadow-sm mt-4">
+                        <div class="card-body">
+                            <h3 class="card-title border-bottom pb-2">Сертификаты</h3>
+                            <div class="row g-4">
+                                {% for cert in certificates %}
+                                    <div class="col-md-6">
+                                        <div class="card h-100">
+                                            {% if cert.image %}
+                                                <img src="{{ cert.image.url }}" 
+                                                     class="card-img-top" 
+                                                     alt="{{ cert.title }}"
+                                                     style="object-fit: contain; height: 200px;">
+                                            {% endif %}
+                                            <div class="card-body">
+                                                <h5 class="card-title">{{ cert.title }}</h5>
+                                                {% if cert.description %}
+                                                    <p class="card-text small">{{ cert.description }}</p>
+                                                {% endif %}
+                                                <p class="card-text">
+                                                    <small class="text-muted">
+                                                        Получен: {{ cert.date_received|date:"d.m.Y" }}
+                                                    </small>
+                                                </p>
+                                                <a href="{{ cert.file.url }}" 
+                                                   class="btn btn-sm btn-outline-primary" 
+                                                   download>
+                                                    <i class="bi bi-download me-1"></i>Скачать
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    {% else %}
+        <div class="alert alert-info text-center">
+            Информация об авторе пока не добавлена.
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

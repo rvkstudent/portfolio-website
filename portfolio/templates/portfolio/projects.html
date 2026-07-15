@@ -1,0 +1,406 @@
+{% extends 'base.html' %}
+{% load i18n %}
+
+{% block title %}
+    {% if seo_data.meta_title %}
+        {{ seo_data.meta_title }}
+    {% else %}
+        {% trans "Профессиональные достижения" %} {{ selected_year }}
+    {% endif %}
+{% endblock %}
+
+{% block extra_head %}
+    <!-- SEO Meta Tags -->
+    {% if seo_data.meta_description %}
+    <meta name="description" content="{{ seo_data.meta_description }}">
+    {% endif %}
+    
+    {% if seo_data.meta_keywords %}
+    <meta name="keywords" content="{{ seo_data.meta_keywords }}">
+    {% endif %}
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="{{ request.build_absolute_uri }}">
+    <meta property="og:title" content="{{ seo_data.meta_title|default:page_title }}">
+    {% if seo_data.meta_description %}
+    <meta property="og:description" content="{{ seo_data.meta_description }}">
+    {% endif %}
+    {% if seo_data.og_image %}
+    <meta property="og:image" content="{{ request.scheme }}://{{ request.get_host }}{{ seo_data.og_image }}">
+    {% endif %}
+    
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="{{ request.build_absolute_uri }}">
+    <meta property="twitter:title" content="{{ seo_data.meta_title|default:page_title }}">
+    {% if seo_data.meta_description %}
+    <meta property="twitter:description" content="{{ seo_data.meta_description }}">
+    {% endif %}
+    {% if seo_data.og_image %}
+    <meta property="twitter:image" content="{{ request.scheme }}://{{ request.get_host }}{{ seo_data.og_image }}">
+    {% endif %}
+{% endblock %}
+
+{% block content %}
+<style>
+    /* Минималистичный компактный стиль */
+    .projects-page {
+        background: #fafafa;
+        min-height: 100vh;
+        padding: 1.5rem 0;
+    }
+    
+    .page-header {
+        background: #2c3e50;
+        color: white;
+        padding: 1.25rem 0;
+        margin-bottom: 1.5rem;
+        border-bottom: 3px solid #3498db;
+    }
+    
+    .page-header h1 {
+        font-size: 1.75rem;
+        font-weight: 600;
+        margin: 0;
+        margin-bottom: 0.25rem;
+    }
+    
+    .page-header .subtitle {
+        font-size: 1.1rem;
+        font-weight: 400;
+        color: #ecf0f1;
+        margin: 0;
+    }
+    
+    /* Оглавление */
+    .table-of-contents {
+        background: white;
+        border: 1px solid #e0e0e0;
+        border-radius: 4px;
+        padding: 1rem;
+        margin-bottom: 1.5rem;
+        position: sticky;
+        top: 1rem;
+        z-index: 100;
+    }
+    
+    .toc-title {
+        font-size: 1rem;
+        font-weight: 600;
+        color: #2c3e50;
+        margin-bottom: 0.75rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+    
+    .toc-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+    }
+    
+    .toc-list li {
+        margin: 0;
+    }
+    
+    .toc-list a {
+        display: inline-block;
+        padding: 0.4rem 0.85rem;
+        font-size: 0.9rem;
+        color: #555;
+        text-decoration: none;
+        border: 1px solid #ddd;
+        border-radius: 3px;
+        transition: all 0.2s;
+    }
+    
+    .toc-list a:hover {
+        background: #3498db;
+        color: white;
+        border-color: #3498db;
+    }
+    
+    /* Стили для вкладок годов */
+    .year-tabs {
+        background: white;
+        border: 1px solid #e0e0e0;
+        border-radius: 4px;
+        padding: 0.75rem;
+        margin-bottom: 1.5rem;
+    }
+    
+    .year-tabs .nav-tabs {
+        border: none;
+        gap: 0.35rem;
+        justify-content: center;
+    }
+    
+    .year-tabs .nav-link {
+        border: 1px solid #ddd;
+        border-radius: 3px;
+        padding: 0.45rem 1rem;
+        font-weight: 500;
+        font-size: 0.95rem;
+        color: #555;
+        transition: all 0.2s;
+    }
+    
+    .year-tabs .nav-link:hover {
+        background: #f5f5f5;
+        border-color: #3498db;
+        color: #3498db;
+    }
+    
+    .year-tabs .nav-link.active {
+        background: #3498db;
+        border-color: #3498db;
+        color: white;
+    }
+    
+    /* Карточки секций - компактные */
+    .achievement-card {
+        background: white;
+        border: 1px solid #e0e0e0;
+        border-radius: 4px;
+        margin-bottom: 1rem;
+        overflow: hidden;
+    }
+    
+    .achievement-card .card-header {
+        border-bottom: 1px solid #e0e0e0;
+        padding: 0.85rem 1.1rem;
+        font-weight: 600;
+        font-size: 1.05rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        background: #f0f4f8;
+        color: #2c3e50;
+    }
+    
+    .achievement-card .card-header i {
+        font-size: 1.4rem;
+        color: #3498db;
+    }
+    
+    /* Специальный стиль для заголовка "Технологический стек" */
+    #tech-stack .card-header {
+        font-size: 1.2rem;
+    }
+    
+    #tech-stack .card-header i {
+        font-size: 1.6rem;
+    }
+    
+    .achievement-card .card-body {
+        padding: 1.1rem;
+        font-size: 0.95rem;
+        line-height: 1.65;
+        color: #444;
+    }
+    
+    /* Стили для markdown контента */
+    .achievement-card .card-body h3 {
+        font-size: 1.05rem;
+        font-weight: 600;
+        color: #2c3e50;
+        margin-top: 1rem;
+        margin-bottom: 0.6rem;
+        border-bottom: 1px solid #e0e0e0;
+        padding-bottom: 0.4rem;
+    }
+    
+    .achievement-card .card-body h3:first-child {
+        margin-top: 0;
+    }
+    
+    .achievement-card .card-body ul {
+        list-style: none;
+        padding-left: 0;
+        margin-bottom: 0.5rem;
+    }
+    
+    .achievement-card .card-body ul li {
+        padding: 0.3rem 0;
+        padding-left: 1.4rem;
+        position: relative;
+        font-size: 0.95rem;
+    }
+    
+    .achievement-card .card-body ul li:before {
+        content: "•";
+        position: absolute;
+        left: 0.5rem;
+        color: #3498db;
+        font-size: 1.1rem;
+    }
+    
+    .achievement-card .card-body strong {
+        color: #2c3e50;
+        font-weight: 600;
+    }
+    
+    .achievement-card .card-body p {
+        margin-bottom: 0.8rem;
+        font-size: 0.95rem;
+    }
+    
+    /* Адаптивность */
+    @media (max-width: 768px) {
+        .page-header h1 {
+            font-size: 1.4rem;
+        }
+        
+        .table-of-contents {
+            position: static;
+        }
+        
+        .toc-list {
+            flex-direction: column;
+        }
+        
+        .year-tabs .nav-tabs {
+            flex-wrap: wrap;
+        }
+        
+        .year-tabs .nav-link {
+            font-size: 0.9rem;
+            padding: 0.4rem 0.85rem;
+        }
+        
+        .achievement-card .card-body {
+            font-size: 0.9rem;
+        }
+    }
+</style>
+
+<div class="projects-page">
+    <div class="container">
+        <!-- Заголовок страницы -->
+        <div class="page-header text-center">
+            <h1>
+                <i class="bi bi-briefcase me-2"></i>
+                {% if page_title %}
+                    {{ page_title }}
+                {% else %}
+                    {% trans "Профессиональные достижения" %} {{ selected_year }}
+                {% endif %}
+            </h1>
+            {% if page_subtitle %}
+            <p class="subtitle">{{ page_subtitle }}</p>
+            {% endif %}
+        </div>
+        
+        <!-- Селектор года (вкладки) -->
+        <div class="year-tabs">
+            <nav>
+                <ul class="nav nav-tabs" role="tablist">
+                    {% for year in years %}
+                    <li class="nav-item" role="presentation">
+                        <a class="nav-link {% if year == selected_year %}active{% endif %}" href="?year={{ year }}">
+                            {{ year }}
+                        </a>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </nav>
+        </div>
+
+        {% if achievements_html %}
+        <!-- Оглавление -->
+        <div class="table-of-contents">
+            <div class="toc-title">
+                <i class="bi bi-list-ul me-1"></i>
+                {% trans "Навигация" %}
+            </div>
+            <ul class="toc-list">
+                <li><a href="#summary"><i class="bi bi-file-text me-1"></i>{% trans "Резюме" %}</a></li>
+                <li><a href="#tech-stack"><i class="bi bi-cpu me-1"></i>{% trans "Технологии" %}</a></li>
+                <li><a href="#business-results"><i class="bi bi-graph-up me-1"></i>{% trans "Результаты" %}</a></li>
+                <li><a href="#competencies"><i class="bi bi-star me-1"></i>{% trans "Компетенции" %}</a></li>
+                {% if achievements_html.learning_development %}
+                <li><a href="#learning-development"><i class="bi bi-mortarboard me-1"></i>{% trans "Обучение" %}</a></li>
+                {% endif %}
+                {% if achievements_html.projects %}
+                <li><a href="#major-projects"><i class="bi bi-folder me-1"></i>{% trans "Проекты" %}</a></li>
+                {% endif %}
+            </ul>
+        </div>
+
+        <!-- Краткое резюме -->
+        <div class="achievement-card" id="summary">
+            <div class="card-header">
+                <i class="bi bi-file-text-fill"></i>
+                {% trans "Краткое резюме" %}
+            </div>
+            <div class="card-body">
+                {{ achievements_html.summary|safe }}
+            </div>
+        </div>
+
+        <!-- Технологический стек -->
+        <div class="achievement-card" id="tech-stack">
+            <div class="card-header">
+                <i class="bi bi-cpu-fill"></i>
+                {% trans "Технологический стек" %}
+            </div>
+            <div class="card-body">
+                {{ achievements_html.tech_stack|safe }}
+            </div>
+        </div>
+
+        <!-- Бизнес-результаты -->
+        <div class="achievement-card" id="business-results">
+            <div class="card-header">
+                <i class="bi bi-graph-up-arrow"></i>
+                {% trans "Бизнес-результаты" %}
+            </div>
+            <div class="card-body">
+                {{ achievements_html.business_results|safe }}
+            </div>
+        </div>
+
+        <!-- Ключевые компетенции -->
+        <div class="achievement-card" id="competencies">
+            <div class="card-header">
+                <i class="bi bi-star-fill"></i>
+                {% trans "Ключевые компетенции" %}
+            </div>
+            <div class="card-body">
+                {{ achievements_html.key_competencies|safe }}
+            </div>
+        </div>
+
+        <!-- Обучение и развитие -->
+        {% if achievements_html.learning_development %}
+        <div class="achievement-card" id="learning-development">
+            <div class="card-header">
+                <i class="bi bi-mortarboard-fill"></i>
+                {% trans "Обучение и развитие" %}
+            </div>
+            <div class="card-body">
+                {{ achievements_html.learning_development|safe }}
+            </div>
+        </div>
+        {% endif %}
+        {% endif %}
+
+        <!-- Описание крупных проектов (markdown из YearAchievements) -->
+        {% if achievements_html.projects %}
+        <div class="achievement-card" id="major-projects">
+            <div class="card-header">
+                <i class="bi bi-collection-fill"></i>
+                {% trans "Крупные проекты" %}
+            </div>
+            <div class="card-body">
+                {{ achievements_html.projects|safe }}
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

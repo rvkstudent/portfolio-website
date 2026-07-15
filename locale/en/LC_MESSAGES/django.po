@@ -1,0 +1,178 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-07-05 16:36+0300\n"
+"PO-Revision-Date: 2025-07-05 16:36+0300\n"
+"Last-Translator: Roman Kozlov <EMAIL@ADDRESS>\n"
+"Language-Team: Russian <LL@li.org>\n"
+"Language: en\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+
+#: blog/admin.py:26
+msgid "Язык и связь"
+msgstr "Language and relations"
+
+#: blog/admin.py:29
+msgid "Контент"
+msgstr "Content"
+
+#: blog/admin.py:32
+msgid "Метаданные"
+msgstr "Metadata"
+
+#: blog/admin.py:52
+msgid "Связанный перевод"
+msgstr "Related translation"
+
+#: blog/admin.py:56
+msgid "Теги"
+msgstr "Tags"
+
+#: blog/admin.py:83
+msgid "Изображения"
+msgstr "Images"
+
+#: blog/templates/blog/post_detail.html:5
+msgid "blog_title"
+msgstr "Blog - My Portfolio"
+
+#: blog/templates/blog/post_detail.html:38
+msgid "back_to_post_list"
+msgstr "Return to Post list"
+
+#: blog/templates/blog/post_detail.html:43
+msgid "tags"
+msgstr "Tags"
+
+#: blog/templates/blog/post_detail.html:94
+#: blog/templates/blog/post_detail.html:99
+msgid "no_image"
+msgstr "No image"
+
+#: blog/templates/blog/post_detail.html:106
+msgid "image_check_error"
+msgstr "Image check error"
+
+#: blog/templates/blog/post_list.html:5
+msgid "blog_header"
+msgstr "Блог"
+
+#: blog/templates/blog/post_list.html:5 templates/base.html:93
+msgid "portfolio_header"
+msgstr "My Portfolio"
+
+#: blog/templates/blog/post_list.html:13
+msgid "blog_link"
+msgstr "Blog"
+
+#: blog/templates/blog/post_list.html:20
+msgid "all_posts"
+msgstr "All Posts"
+
+#: blog/templates/blog/post_list.html:73
+msgid "article_read"
+msgstr "Read next"
+
+#: blog/templates/blog/post_list.html:84
+msgid "no_published_posts"
+msgstr "No published Posts"
+
+#: blog/templates/blog/post_list.html:91
+msgid "pagination"
+msgstr "Page navigation"
+
+#: blog/templates/blog/post_list.html:95
+msgid "first"
+msgstr "First"
+
+#: blog/templates/blog/post_list.html:100
+#: blog/templates/blog/post_list.html:116
+msgid "previous_page"
+msgstr "Previous"
+
+#: blog/templates/blog/post_list.html:121
+msgid "last_page"
+msgstr "Last"
+
+#: templates/base.html:8
+msgid "portfolio_title"
+msgstr "My Portfolio"
+
+#: templates/base.html:99
+msgid "about_me"
+msgstr "About me"
+
+#: templates/base.html:100
+msgid "portfolio_projects"
+msgstr "Projects"
+
+#: templates/base.html:101
+msgid "portfolio_blog"
+msgstr "Blog"
+
+#: templates/base.html:153
+msgid "button_copy_code"
+msgstr "copy code"
+
+#: templates/base.html:154 templates/base.html:164
+msgid "copy_code"
+msgstr "copy"
+
+#: templates/base.html:161
+msgid "copied_alert"
+msgstr "Copied!"
+
+#: templates/base.html:169
+msgid "error_alert_message"
+msgstr "Error!"
+
+msgid "Профессиональные достижения"
+msgstr "Professional Achievements"
+
+msgid "Навигация"
+msgstr "Navigation"
+
+msgid "Резюме"
+msgstr "Summary"
+
+msgid "Технологии"
+msgstr "Technologies"
+
+msgid "Результаты"
+msgstr "Results"
+
+msgid "Компетенции"
+msgstr "Competencies"
+
+msgid "Обучение"
+msgstr "Learning"
+
+msgid "Проекты"
+msgstr "Projects"
+
+msgid "Краткое резюме"
+msgstr "Executive Summary"
+
+msgid "Технологический стек"
+msgstr "Technology Stack"
+
+msgid "Бизнес-результаты"
+msgstr "Business Results"
+
+msgid "Ключевые компетенции"
+msgstr "Key Competencies"
+
+msgid "Обучение и развитие"
+msgstr "Learning and Development"
+
+msgid "Крупные проекты"
+msgstr "Major Projects"

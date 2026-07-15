@@ -1,0 +1,102 @@
+{% load static i18n %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Anki — {% trans "Карточки" %}</title>
+    <link rel="stylesheet" href="{% static 'anki/css/anki.css' %}">
+</head>
+<body>
+    <div class="anki-container">
+        <div class="anki-header">
+            <div class="anki-header-left">
+                <h1 class="anki-title">📚 Anki</h1>
+                <span class="anki-subtitle" id="stat-total">0 {% trans "карточек" %}</span>
+            </div>
+            <div class="anki-stats-bar">
+                <span>📖 <span id="stat-studied">0</span></span>
+                <span>📅 <span id="stat-due">0</span></span>
+            </div>
+            <div class="anki-controls">
+                <button id="btn-search" class="anki-btn anki-btn-outline">🔍</button>
+                <button id="btn-more-new" class="anki-btn anki-btn-outline">➕ {% trans "Ещё" %}</button>
+            </div>
+        </div>
+
+        <!-- Состояния -->
+        <div id="state-loading" class="anki-loading">{% trans "Загрузка..." %}</div>
+        <div id="state-empty" class="anki-empty hidden">
+            <p>✨ {% trans "Все карточки изучены!" %}</p>
+        </div>
+
+        <!-- Основная карточка -->
+        <div id="card-container" class="anki-main hidden">
+            <div class="anki-sidebar">
+                <canvas id="chart-new" width="30" height="30" class="anki-chart" title="{% trans 'Новые' %}"></canvas>
+                <canvas id="chart-learning" width="30" height="30" class="anki-chart" title="{% trans 'В процессе' %}"></canvas>
+                <canvas id="chart-young" width="30" height="30" class="anki-chart" title="{% trans 'Молодые' %}"></canvas>
+                <canvas id="chart-mature" width="30" height="30" class="anki-chart" title="{% trans 'Зрелые' %}"></canvas>
+                <div id="card-tags" class="anki-tag"></div>
+                <div id="card-progress-info" class="anki-progress-text"></div>
+            </div>
+
+            <div class="anki-card-area">
+                <div class="anki-progress-bar">
+                    <div id="progress-fill" class="anki-progress-fill" style="width:0%"></div>
+                </div>
+                <div id="flashcard" class="anki-flashcard" onclick="this.classList.toggle('is-flipped')">
+                    <div class="anki-flashcard-inner">
+                        <div class="anki-flashcard-front">
+                            <div id="card-image" class="anki-card-image"></div>
+                            <div id="card-number" class="anki-card-number"></div>
+                            <div id="card-word" class="anki-card-word"></div>
+                            <div id="card-ipa" class="anki-card-ipa"></div>
+                            <div id="card-audio" class="anki-card-audio"></div>
+                            <div id="card-context" class="anki-card-context"></div>
+                        </div>
+                        <div class="anki-flashcard-back">
+                            <div id="back-word" class="anki-back-word"></div>
+                            <div id="back-translation" class="anki-back-translation"></div>
+                            <div id="back-audio" class="anki-card-audio"></div>
+                            <div class="anki-details">
+                                <div id="detail-ipa" class="anki-detail-item"></div>
+                                <div id="detail-example" class="anki-detail-item"></div>
+                                <div id="detail-example-enru" class="anki-detail-item"></div>
+                                <div id="detail-collocations" class="anki-detail-item"></div>
+                                <div id="detail-synonyms" class="anki-detail-item"></div>
+                                <div id="detail-wordfamily" class="anki-detail-item"></div>
+                                <div id="detail-definition" class="anki-detail-item"></div>
+                                <div id="detail-irregular" class="anki-detail-item"></div>
+                                <div id="detail-common-error" class="anki-detail-item"></div>
+                                <div id="detail-idioms" class="anki-detail-item"></div>
+                                <div id="detail-proverb" class="anki-detail-item"></div>
+                                <div id="detail-homonyms" class="anki-detail-item"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <button id="btn-show-answer" class="anki-btn anki-btn-primary anki-show-btn">{% trans "Показать ответ" %}</button>
+
+                <div id="rating-buttons" class="anki-rating hidden">
+                    <button onclick="rate(1)" class="anki-rating-btn anki-rating-again" title="{% trans 'Снова' %}">{% trans 'Снова' %}</button>
+                    <button onclick="rate(2)" class="anki-rating-btn anki-rating-hard" title="{% trans 'Тяжело' %}">{% trans 'Тяжело' %}</button>
+                    <button onclick="rate(3)" class="anki-rating-btn anki-rating-good" title="{% trans 'Хорошо' %}">{% trans 'Хорошо' %}</button>
+                    <button onclick="rate(4)" class="anki-rating-btn anki-rating-easy" title="{% trans 'Легко' %}">{% trans 'Легко' %}</button>
+                    <button onclick="rate(5)" class="anki-rating-btn anki-rating-perfect" title="{% trans 'Отлично' %}">{% trans 'Отлично' %}</button>
+                </div>
+            </div>
+
+            <div class="anki-sidebar anki-sidebar-right">
+                <div id="search-panel" class="anki-search hidden">
+                    <input type="text" id="search-input" class="anki-search-input" placeholder="{% trans 'Поиск...' %}">
+                    <div id="search-results" class="anki-search-results"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="{% static 'anki/js/anki.js' %}"></script>
+</body>
+</html>

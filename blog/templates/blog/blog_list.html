@@ -1,0 +1,8 @@
+<div class="language-switcher">
+    {% get_available_languages as LANGUAGES %}
+    {% for lang_code, lang_name in LANGUAGES %}
+        {% if lang_code != LANGUAGE_CODE %}
+            <a href="/{{ lang_code }}/blog/">{{ lang_name }}</a>
+        {% endif %}
+    {% endfor %}
+</div>

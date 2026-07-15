@@ -1,0 +1,82 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:14
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    env_file:
+      - ./.env.dev
+    environment:
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_DB=${DB_NAME}
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER} -d ${DB_NAME}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: always
+
+  web:
+    image: rvkstudent/portfolio:latest
+    restart: always
+    depends_on:
+      db:
+        condition: service_healthy
+    env_file:
+      - ./.env.dev
+    environment:
+      - USE_SQLITE=false
+      - MODE=production
+    volumes:
+      - media_volume:/app/media
+      - static_volume:/app/staticfiles
+
+  cdek-hook:
+    build:
+      context: ../cdek_hook
+      dockerfile: Dockerfile
+    env_file:
+      - ../cdek_hook/.env
+    ports:
+      - "127.0.0.1:18080:8080"
+    restart: unless-stopped
+
+  nginx:
+    image: nginx:1.23-alpine
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/conf.d/default.conf
+      - static_volume:/app/staticfiles
+      - media_volume:/app/media
+      - ./nginx/logs:/var/log/nginx
+      - ./nginx/certbot_www:/var/www/certbot
+      - certbot_data:/etc/letsencrypt
+    depends_on:
+      - web
+      - cdek-hook
+    restart: always
+
+
+  certbot:
+    depends_on:
+      - nginx
+    image: certbot/certbot
+    env_file:
+      - .env.dev
+    volumes:
+      - certbot_data:/etc/letsencrypt
+      - ./nginx/certbot_www:/var/www/certbot
+      - ./certbot.sh:/certbot.sh
+    entrypoint: sh /certbot.sh
+
+
+volumes:
+  postgres_data:
+  static_volume:
+  media_volume:
+  certbot_data:
+  certbot_www:

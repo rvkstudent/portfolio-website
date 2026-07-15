@@ -1,0 +1,56 @@
+version: '3.8'
+
+services:
+  db:
+    image: arm64v8/postgres:15  # Специальный образ для ARM64
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    environment:
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_DB=postgres
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  web:
+    build: .  # Используем локальный Dockerfile вместо образа
+    ports:
+      - "8000:8000"
+    depends_on:
+      db:
+        condition: service_healthy
+    env_file:
+      - ./.env.dev
+    environment:
+      - USE_SQLITE=false
+      - MODE=development
+      - DEBUG=True
+      - DB_HOST=db
+      - DB_USER=postgres
+      - DB_PASSWORD=postgres
+      - DB_NAME=postgres
+    volumes:
+      - media_volume:/app/media
+      - static_volume:/app/staticfiles
+      - ./:/app
+
+  nginx:
+    image: nginx:alpine  # Используем alpine версию, которая обычно лучше работает с arm64
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx/nginx.local.conf:/etc/nginx/conf.d/default.conf
+      - static_volume:/app/staticfiles
+      - media_volume:/app/media
+    depends_on:
+      - web
+
+volumes:
+  postgres_data:
+  static_volume:
+  media_volume:

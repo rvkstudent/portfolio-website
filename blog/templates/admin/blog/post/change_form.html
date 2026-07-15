@@ -1,0 +1,24 @@
+{% extends "admin/change_form.html" %}
+{% load i18n %}
+
+{% block extrahead %}
+{{ block.super }}
+{# Явно включаем CSRF токен для работы с AJAX #}
+{% csrf_token %}
+{% endblock %}
+
+{% block field_sets %}
+{{ block.super }}
+<div class="help-text" style="margin: 10px 0;">
+    <h4>Справка по работе с изображениями в Markdown</h4>
+    <div class="help-content">
+        <p><strong>Загрузка изображения:</strong> Нажмите кнопку "Загрузить изображение" над редактором.</p>
+        <p><strong>Markdown синтаксис для изображений:</strong></p>
+        <pre>![Альтернативный текст](путь/к/изображению.jpg "Подсказка при наведении")</pre>
+        <p><strong>Пример:</strong></p>
+        <pre>![Логотип Django](https://static.djangoproject.com/img/logos/django-logo-positive.png "Django логотип")</pre>
+        <p><strong>Подпись к изображению:</strong> Добавьте текст в курсиве сразу после изображения</p>
+        <pre>![Альтернативный текст](путь/к/изображению.jpg)<br>*Это подпись к изображению*</pre>
+    </div>
+</div>
+{% endblock %}

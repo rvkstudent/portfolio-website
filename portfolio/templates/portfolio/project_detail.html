@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load markdown_extras %}
+
+{% block title %}
+    {% if LANGUAGE_CODE == 'ru' %}
+        {{ project.title_ru }}
+    {% else %}
+        {{ project.title_en }}
+    {% endif %}
+{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h1>
+        {% if LANGUAGE_CODE == 'ru' %}
+            {{ project.title_ru }}
+        {% else %}
+            {{ project.title_en }}
+        {% endif %}
+    </h1>
+    <img src="{{ project.image.url }}" alt="{% if LANGUAGE_CODE == 'ru' %}{{ project.title_ru }}{% else %}{{ project.title_en }}{% endif %}" class="img-fluid" style="max-height: 250px; object-fit: cover;">
+    <p>
+        {% if LANGUAGE_CODE == 'ru' %}
+        {{ project.formatted_markdown|safe }}
+    {% else %}
+        {{ project.formatted_markdown|safe }}
+    {% endif %}
+    </p>
+    <p><strong>{% trans "Technologies" %}:</strong> {{ project.technology }}</p>
+</div>
+{% endblock %}
